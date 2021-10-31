@@ -9,6 +9,7 @@ setup(
     install_requires=[
         'fastapi==0.70.0',
         'uvicorn==0.15.0',
+        'SQLAlchemy==1.4.26',
     ],
     scripts=['app/main.py']
 )

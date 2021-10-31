@@ -21,6 +21,12 @@ Install backend package:
 pip install -e .
 ```
 
+Copy or create config file `.env`:
+
+```
+cp .env.example .env
+```
+
 Run project:
 
 ```
