@@ -9,6 +9,12 @@ Create new environment:
 virtualenv --python=python3.9 venv
 ```
 
+Activate environment:
+
+```
+. venv/bin/activate
+```
+
 Install backend package:
 
 ```
@@ -18,5 +24,5 @@ pip install -e .
 Run project:
 
 ```
-docker-compose up -d
+uvicorn main:app --reload
 ```
