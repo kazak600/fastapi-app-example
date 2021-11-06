@@ -21,3 +21,10 @@ class Stream(Base):
 
     def __str__(self):
         return f'{self.stream_id} - {self.title}[{self.topic}]'
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    email = Column(String)
+    password = Column(String)
