@@ -1,17 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from sqlalchemy.ext.declarative import declarative_base
 
 from app.config import DATABASE_URL
-
-Base = declarative_base()
 
 
 def main():
     engine = create_engine(DATABASE_URL)
     session = Session(bind=engine.connect())
-
-    session.execute('CREATE TABLE stream (stream_id INTEGER NOT NULL PRIMARY KEY, title VARCHAR, topic VARCHAR);')
 
     session.execute("""CREATE TABLE users (
         id INTEGER NOT NULL PRIMARY KEY, 
@@ -27,6 +22,16 @@ def main():
         id INTEGER NOT NULL PRIMARY KEY,
         token VARCHAR(256),
         user_id INTEGER REFERENCES users,
+        created_at VARCHAR(64)
+    );""")
+
+    session.execute("""CREATE TABLE stream (
+        id INTEGER NOT NULL PRIMARY KEY,
+        user_id INTEGER REFERENCES users, 
+        title VARCHAR, 
+        topic VARCHAR,
+        status VARCHAR(64),
+        description VARCHAR,
         created_at VARCHAR(64)
     );""")
 
