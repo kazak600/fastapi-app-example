@@ -1,6 +1,8 @@
+from enum import Enum
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, create_engine
-from sqlalchemy.orm import relationship, backref, Session
+
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
+from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 
 from app.config import DATABASE_URL
@@ -14,14 +16,10 @@ def connect_db():
     return session
 
 
-class Stream(Base):
-    __tablename__ = 'stream'
-    stream_id = Column(Integer, primary_key=True)
-    title = Column(String)
-    topic = Column(String)
-
-    def __str__(self):
-        return f'{self.stream_id} - {self.title}[{self.topic}]'
+class StreamStatus(Enum):
+    PLANED = 'planed'
+    ACTIVE = 'active'
+    CLOSED = 'closed'
 
 
 class User(Base):
@@ -53,3 +51,17 @@ class AuthToken(Base):
     token = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
     created_at = Column(String)
+
+
+class Stream(Base):
+    __tablename__ = 'stream'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    title = Column(String)
+    topic = Column(String)
+    status = Column(String, default=StreamStatus.PLANED.value)
+    description = Column(String)
+    created_at = Column(String, default=datetime.utcnow())
+
+    def __str__(self):
+        return f'{self.id} - {self.title}[{self.topic}]'

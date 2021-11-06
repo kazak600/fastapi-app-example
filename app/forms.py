@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 class StreamForm(BaseModel):
     title: str
     topic: str
+    status: Optional[str] = None
+    description: Optional[str] = None
 
 
 class UserCreateForm(BaseModel):

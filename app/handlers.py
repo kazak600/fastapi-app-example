@@ -51,15 +51,19 @@ def create_user(user: UserCreateForm = Body(..., embed=True), database=Depends(c
     return {'user_id': new_user.id}
 
 
-@router.get('/stream')
-def get_stream(database=Depends(connect_db)):
-    all_streams = database.query(Stream).all()
-    return all_streams
+@router.get('/stream', name='stream:get')
+def get_stream(token: AuthToken = Depends(check_auth_token), database=Depends(connect_db)):
+    streams_list = database.query(Stream).filter(Stream.user_id == token.user_id).all()
+    return streams_list
 
 
-@router.post('/stream')
-def create_stream(item: StreamForm = Body(..., embed=True), database=Depends(connect_db)):
-    stream = Stream(title=item.title, topic=item.topic)
+@router.post('/stream', name='stream:create')
+def create_stream(
+        token: AuthToken = Depends(check_auth_token),
+        stream_form: StreamForm = Body(..., embed=True),
+        database=Depends(connect_db)
+):
+    stream = Stream(user_id=token.user_id, title=stream_form.title, topic=stream_form.topic, description=stream_form.description)
     database.add(stream)
     database.commit()
-    return {'stream': {'status': 'created'}}
+    return {'status': 'created'}
