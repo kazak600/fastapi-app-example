@@ -15,3 +15,8 @@ class UserCreateForm(BaseModel):
 class UserLoginForm(BaseModel):
     email: str
     password: str
+
+
+class UserGetForm(BaseModel):
+    email: str
+    auth_token: str

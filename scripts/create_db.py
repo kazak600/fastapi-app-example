@@ -23,6 +23,13 @@ def main():
         created_at VARCHAR(64)
     );""")
 
+    session.execute("""CREATE TABLE auth_token (
+        id INTEGER NOT NULL PRIMARY KEY,
+        token VARCHAR(256),
+        user_id INTEGER REFERENCES users,
+        created_at VARCHAR(64)
+    );""")
+
     session.close()
 
 

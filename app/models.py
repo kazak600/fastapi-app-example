@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, create_engine
 from sqlalchemy.orm import relationship, backref, Session
 from sqlalchemy.ext.declarative import declarative_base
@@ -28,3 +29,18 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String)
     password = Column(String)
+    first_name = Column(String)
+    last_name = Column(String)
+    nickname = Column(String)
+    created_at = Column(String, default=datetime.utcnow())
+
+    def __str__(self):
+        return f'[{self.id}]{self.email}'
+
+
+class AuthToken(Base):
+    __tablename__ = 'auth_token'
+    id = Column(Integer, primary_key=True)
+    token = Column(String)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    created_at = Column(String)
