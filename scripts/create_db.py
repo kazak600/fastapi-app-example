@@ -13,6 +13,16 @@ def main():
 
     session.execute('CREATE TABLE stream (stream_id INTEGER NOT NULL PRIMARY KEY, title VARCHAR, topic VARCHAR);')
 
+    session.execute("""CREATE TABLE users (
+        id INTEGER NOT NULL PRIMARY KEY, 
+        email VARCHAR(256),
+        password VARCHAR(512),
+        first_name VARCHAR(256),
+        last_name VARCHAR(256),
+        nickname VARCHAR(256),
+        created_at VARCHAR(64)
+    );""")
+
     session.close()
 
 
