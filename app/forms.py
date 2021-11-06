@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class StreamForm(BaseModel):
@@ -7,6 +7,11 @@ class StreamForm(BaseModel):
     topic: str
     status: Optional[str] = None
     description: Optional[str] = None
+
+
+class StreamUpdateForm(BaseModel):
+    stream_id: int
+    status: str
 
 
 class UserCreateForm(BaseModel):
@@ -20,8 +25,3 @@ class UserCreateForm(BaseModel):
 class UserLoginForm(BaseModel):
     email: str
     password: str
-
-
-class UserGetForm(BaseModel):
-    email: str
-    auth_token: str

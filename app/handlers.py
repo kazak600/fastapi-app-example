@@ -4,15 +4,15 @@ from datetime import datetime
 from fastapi import APIRouter, Body, Depends, HTTPException
 from starlette import status
 
-from app.models import Stream, User, AuthToken, connect_db
-from app.forms import StreamForm, UserCreateForm, UserLoginForm, UserGetForm
+from app.models import Stream, User, AuthToken, StreamStatus, connect_db
+from app.forms import UserCreateForm, UserLoginForm, StreamForm, StreamUpdateForm
 from app.authentication import check_auth_token
 from app.utils import get_password_hash
 
 router = APIRouter()
 
 
-@router.post('/login')
+@router.post('/login', name='user:login')
 def login(user_form: UserLoginForm = Body(..., embed=True), database=Depends(connect_db)):
     user = database.query(User).filter(User.email == user_form.email).one_or_none()
     if not user or get_password_hash(user_form.password) != user.password:
@@ -67,3 +67,31 @@ def create_stream(
     database.add(stream)
     database.commit()
     return {'status': 'created'}
+
+
+@router.put('/stream', name='stream:update')
+def update_stream(
+        token: AuthToken = Depends(check_auth_token),
+        stream_form: StreamUpdateForm = Body(..., embed=True),
+        database=Depends(connect_db)
+):
+    """
+    Change stream status: active or closed
+    """
+    if stream_form.status not in (StreamStatus.ACTIVE.value, StreamStatus.CLOSED.value):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Status must be active or closed',
+        )
+
+    stream = database.query(Stream).filter(Stream.id == stream_form.stream_id, Stream.user_id == token.user_id).one_or_none()
+    if not stream:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'Stream with id {stream_form.stream_id} doesnt exist',
+        )
+
+    stream.status = stream_form.status
+    database.add(stream)
+    database.commit()
+    return {'status': stream_form.status}
