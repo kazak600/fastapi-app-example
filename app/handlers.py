@@ -1,7 +1,9 @@
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, HTTPException
+from starlette import status
+
 from app.models import Stream, User, AuthToken, connect_db
 from app.forms import StreamForm, UserCreateForm, UserLoginForm, UserGetForm
 from app.authentication import check_auth_token
@@ -25,12 +27,25 @@ def login(user_form: UserLoginForm = Body(..., embed=True), database=Depends(con
 @router.get('/user', name='user:get')
 def get_user(token: AuthToken = Depends(check_auth_token), database=Depends(connect_db)):
     user = database.query(User).filter(User.id == token.user_id).one_or_none()
-    return {'user': {'id': user.id, 'email': user.email}}
+    return {'user': user.get_filtered_data()}
 
 
 @router.post('/user', name='user:create')
 def create_user(user: UserCreateForm = Body(..., embed=True), database=Depends(connect_db)):
-    new_user = User(email=user.email, password=get_password_hash(user.password))
+    exists_user = database.query(User.id).filter(User.email == user.email).one_or_none()
+    if exists_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Email already taken',
+        )
+
+    new_user = User(
+        email=user.email,
+        password=get_password_hash(user.password),
+        first_name=user.first_name,
+        last_name=user.last_name,
+        nickname=user.nickname
+    )
     database.add(new_user)
     database.commit()
     return {'user_id': new_user.id}

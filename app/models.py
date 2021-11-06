@@ -37,6 +37,15 @@ class User(Base):
     def __str__(self):
         return f'[{self.id}]{self.email}'
 
+    def get_filtered_data(self):
+        return {
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'nickname': self.nickname,
+            'created_at': self.created_at
+        }
+
 
 class AuthToken(Base):
     __tablename__ = 'auth_token'

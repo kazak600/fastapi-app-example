@@ -10,6 +10,9 @@ class StreamForm(BaseModel):
 class UserCreateForm(BaseModel):
     email: str
     password: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    nickname: Optional[str] = None
 
 
 class UserLoginForm(BaseModel):
