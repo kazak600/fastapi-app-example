@@ -32,3 +32,11 @@ Run project:
 ```
 uvicorn main:app --reload
 ```
+
+Run tests:
+
+```
+export IS_TEST=True && pytest tests
+```
+
+**todo: update docs run with docker**

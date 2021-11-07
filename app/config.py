@@ -12,8 +12,14 @@ root_dir = dir_path[:-3]
 
 config = Config(f'{root_dir}.env')
 
+IS_TEST = bool(os.getenv('IS_TEST', False))
 DEBUG = config('DEBUG', cast=bool, default=False)
-DATABASE_URL = f'sqlite:///{root_dir}' + config('DB_NAME', cast=str)
+
+if IS_TEST:
+    DATABASE_URL = f'sqlite:///{root_dir}' + config('TEST_DB_NAME', cast=str, default='test_app.db')
+else:
+    DATABASE_URL = f'sqlite:///{root_dir}' + config('DB_NAME', cast=str)
+
 MAX_CONNECTIONS_COUNT = config('MAX_CONNECTIONS_COUNT', cast=int, default=10)
 MIN_CONNECTIONS_COUNT = config('MIN_CONNECTIONS_COUNT', cast=int, default=10)
 
