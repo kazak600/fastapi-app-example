@@ -39,4 +39,8 @@ Run tests:
 export IS_TEST=True && pytest tests
 ```
 
-**todo: update docs run with docker**
+Run docker app container
+
+```
+docker-compose up
+```
